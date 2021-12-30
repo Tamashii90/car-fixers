@@ -1,0 +1,26 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="role" value="${sessionScope.role}" />
+<c:set var="group" value="${sessionScope.group_num}" />
+<c:set var="department" value="${sessionScope.department}" />
+
+<div class="text-right my-3" style="color:black">
+    <span style="text-decoration:underline">Role:</span>
+    <span>
+        <c:choose>
+            <c:when test = "${role.equals('ceo')}">
+                CEO
+            </c:when>
+            <c:when test = "${role.equals('dep_head')}">
+                Head of the ${department} department.
+            </c:when>
+            <c:when test = "${role.equals('group_head')}">
+                Head of group ${group}, ${department} department.
+            </c:when>
+            <c:otherwise>
+                Member of group ${group}, ${department} department.
+            </c:otherwise>
+        </c:choose>
+
+    </span>
+
+</div>
