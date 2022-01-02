@@ -4,10 +4,9 @@
     <h3 id="flash-msg" class="text-white text-center">${pageContext.request.getParameter("msg")}</h3> 
 </c:if>
 
-<header id="header" class="clear text-white">
+<header id="header" class="clear text-white pb-3">
     <div>
-        <h1><a href="${pageContext.request.contextPath}/">Your car</a></h1>
-        <p>Your dream will be true</p>
+        <h1><a href="${pageContext.request.contextPath}/">Car Fixers</a></h1>
         <nav>
             <c:if test="${sessionScope.username != null}">
                 <ul class="clear">

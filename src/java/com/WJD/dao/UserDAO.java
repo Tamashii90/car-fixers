@@ -80,10 +80,12 @@ public class UserDAO {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int group_num = rs.getInt("group_num");
+                // use database username to avoid case-sensitivity errors
+                String dbUsername = rs.getString("username");
                 String password = rs.getString("password");
                 String role = rs.getString("role");
                 String department = rs.getString("department");
-                user = new User(username, password, role, group_num, department);
+                user = new User(dbUsername, password, role, group_num, department);
             }
         } catch (SQLException e) {
         }

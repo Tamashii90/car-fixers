@@ -3,9 +3,9 @@
 <c:set var="group" value="${sessionScope.group_num}" />
 <c:set var="department" value="${sessionScope.department}" />
 
-<div class="text-right my-3" style="color:black">
-    <span style="text-decoration:underline">Role:</span>
-    <span>
+<div class="text-right my-4" style="color:black">
+    <span style="color: black;background: #ffffff80;border-radius: 5px;padding: 5px;">
+        Role:
         <c:choose>
             <c:when test = "${role.equals('ceo')}">
                 CEO
@@ -20,7 +20,5 @@
                 Member of group ${group}, ${department} department.
             </c:otherwise>
         </c:choose>
-
     </span>
-
 </div>

@@ -44,6 +44,7 @@ public class ViewTask extends HttpServlet {
             String username = session.getAttribute("username").toString();
             int group_num = (int) session.getAttribute("group_num");
             String department = session.getAttribute("department").toString();
+            
             //---------- Security Check --------------//
             switch (role) {
                 case "group_member":
