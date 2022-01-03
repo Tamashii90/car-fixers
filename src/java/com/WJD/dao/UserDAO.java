@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO {
@@ -23,13 +25,10 @@ public class UserDAO {
 
     private static final String INSERT_USER_STMT = "INSERT INTO users (first_name, last_name, username, password, department, group_num, role) VALUES (?,?,?,?,?,?,?) ";
 
-    protected static Connection getConnection() {
+    protected static Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection connection = null;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(DB_URI, DB_USER, DB_PWD);
-        } catch (ClassNotFoundException | SQLException ex) {
-        }
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection(DB_URI, DB_USER, DB_PWD);
         return connection;
     }
 
@@ -67,12 +66,13 @@ public class UserDAO {
                 usernames.add(username);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return usernames;
     }
 
-    public static User findUser(String username) {
+    public static User findUser(String username) throws Exception {
         User user = null;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_STMT);) {
@@ -87,8 +87,8 @@ public class UserDAO {
                 String department = rs.getString("department");
                 user = new User(dbUsername, password, role, group_num, department);
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
         return user;
     }
@@ -106,7 +106,7 @@ public class UserDAO {
                 group_nums.add(group_num);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
         return group_nums;
     }
@@ -124,7 +124,7 @@ public class UserDAO {
             preparedStatement.setInt(6, user.getGroup_num());
             preparedStatement.setString(7, user.getRole());
             rowInserted = preparedStatement.executeUpdate() > 0;
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
         return rowInserted;
     }

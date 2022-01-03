@@ -9,6 +9,8 @@ import com.WJD.dao.UserDAO;
 import com.WJD.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.RequestDispatcher;
@@ -28,7 +30,14 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        User user = UserDAO.findUser(username);
+        User user;
+        try {
+            user = UserDAO.findUser(username);
+        } catch (Exception ex) {
+            response.setStatus(500);
+            response.sendRedirect(request.getContextPath() + "/?msg=" + ex.getMessage());
+            return;
+        }
         if(user == null) {
             response.sendRedirect(request.getContextPath() + "/?msg=Invalid Credentials");
             return;
