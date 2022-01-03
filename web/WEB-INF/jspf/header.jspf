@@ -7,6 +7,7 @@
 <header id="header" class="clear text-white pb-3">
     <div>
         <h1><a href="${pageContext.request.contextPath}/">Car Fixers</a></h1>
+        <p>Task Management System</p>
         <nav>
             <c:if test="${sessionScope.username != null}">
                 <ul class="clear">
