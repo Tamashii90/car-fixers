@@ -1,5 +1,6 @@
 /*
 !.gitignore
+!README.md
 !src/
 !web/
 web/META-INF
