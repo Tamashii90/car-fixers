@@ -88,6 +88,7 @@ public class UserDAO {
                 user = new User(dbUsername, password, role, group_num, department);
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return user;
     }
@@ -95,7 +96,6 @@ public class UserDAO {
     public static List<Integer> findDepGroups(String department) {
 
         List<Integer> group_nums = new ArrayList<>();
-        System.out.println(department);
         // this is called try-with-resource, it will auto-close the connection.
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(FIND_GROUP_NUMS_STMT);) {

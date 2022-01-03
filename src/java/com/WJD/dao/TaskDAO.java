@@ -135,7 +135,6 @@ public class TaskDAO {
                 int group_num = rs.getInt("group_num");
                 String department = rs.getString("department");
                 Task task = new Task(id, assignee, task_desc, status, date_added_on, due_date, group_num, department);
-                System.out.println(task);
                 tasks.add(task);
             }
 
