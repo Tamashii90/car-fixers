@@ -1,6 +1,5 @@
 # Car Fixers
-A framework-less Java web app that allows an auto-repair company to manage and track tasks.  
-**The frontend design/CSS in this repo isn't mine.**
+A framework-less Java web app that allows an auto-repair company to manage and track tasks. **The frontend design/CSS in this repo isn't mine.**
 
 - Users with different roles have access to different functions.
 - Tasks have a comments section.
@@ -42,8 +41,36 @@ Thus, a user can have one of the following roles:
     
 ## Typical Workflow
 
-1) The **head of department** creates a new task and assigns it to some **group**.  
-During this phase the task has the status of **available** with no assignee yet.
-2) The **head of the group** assigns the task to a **group member**, causing the task's status to change to **assigned**.
+1) The **head of department** creates a new task and assigns it to some **group**. During this phase, the task has the status of **available** with no assignee yet.
+
+<div align="center">
+    <img alt="img" src="https://i.imgur.com/4gqXJX4.png" />
+    <br />
+    <img alt="img" src="https://i.imgur.com/wYRKY2n.png" />
+</div>
+
+&nbsp;
+
+2) The **head of the group** assigns the task to a **group member**, causing the task's status to change to **assigned**.  
+
+<div align="center">
+    <img alt="img" src="https://i.imgur.com/M9whjQr.png" />
+    <br />
+    <img alt="img" src="https://i.imgur.com/BvxkW8z.png" />
+</div>
+
+&nbsp;
+
 3) The **group member** responsible for a task can either mark it as **complete** after finishing it, or as **has_issues** if he faces issues that prevent him from completing it.
+
+<div align="center">
+    <img alt="img" src="https://i.imgur.com/wwHu6f8.png" />
+</div>
+
+&nbsp;
+
 4) The **group head** can then review **complete** tasks and, if he approves of them, mark them as **confirmed_complete**.
+
+<div align="center">
+    <img alt="img" src="https://i.imgur.com/yjJ2Miy.png" />
+</div>
