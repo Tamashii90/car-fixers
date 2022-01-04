@@ -45,7 +45,7 @@ public class AddTask extends HttpServlet {
         String task_desc = request.getParameter("task_desc");
         String request_due_date = request.getParameter("due_date");
         String status = "available";
-        String assignee = "none";
+        String assignee = null;
         LocalDate due_date = null;
 
         if (request_due_date.isEmpty()) {
