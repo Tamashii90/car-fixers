@@ -1,4 +1,8 @@
-# Car Fixers
+<div align="center">
+<h1>Car Fixers</h1>
+    <img alt="img" src="https://i.imgur.com/hJgJIu8.png" />
+</div>
+
 A framework-less Java web app that allows an auto-repair company to manage and track tasks. **The frontend design/CSS in this repo isn't mine.**
 
 - Users with different roles have access to different functions.
