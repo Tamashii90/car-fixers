@@ -9,9 +9,19 @@ A framework-less Java web app that allows an auto-repair company to manage and t
 - Tasks have a comments section.
 
 ## Content
+- [Database Design](#database-design)
 - [The Company's Structure](#the-companys-structure)
 - [Task Status](#task-status)
 - [Typical Workflow](#typical-workflow)
+
+
+## Database Design
+Following is the ERD of the database. Note that *EMP_ID* in the TASK table will initially hold a **group head**'s ID before a **group member** is assigned the task. This will be explained below.
+*This new ERD doesn't accurately reflect the database implementation yet (work in progress).*
+
+<div align="center">
+    <img alt="DB_ERD" src="https://i.imgur.com/whgmsK3.png" />
+</div>
 
 ## The Company's Structure
 The company has a **CEO** and four **departments**, each managed by a **department head**:
