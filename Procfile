@@ -1,0 +1,1 @@
+web: java -jar target/*.jar -httpsPort $PORT -httpPort $PORT

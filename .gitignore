@@ -2,5 +2,5 @@
 !.gitignore
 !README.md
 !src/
-!web/
-web/META-INF
+!pom.xml
+!Procfile
