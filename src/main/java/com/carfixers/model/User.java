@@ -7,25 +7,22 @@ public class User {
     private String last_name;
     private String password;
     private String role;
-    private int group_num;
-    private String department;
+    private int group_id;
 
-    public User(String username,  String password, String role, int group_num, String department) {
+    public User(String username, String password, String role, int group_id) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.group_num = group_num;
-        this.department = department;
+        this.group_id = group_id;
     }
 
-    public User(String username, String first_name, String last_name, String password, String role, int group_num, String department) {
+    public User(String username, String first_name, String last_name, String password, String role, int group_id) {
         this.username = username;
         this.first_name = first_name;
         this.last_name = last_name;
         this.password = password;
         this.role = role;
-        this.group_num = group_num;
-        this.department = department;
+        this.group_id = group_id;
     }
 
     public String getFirst_name() {
@@ -68,20 +65,12 @@ public class User {
         this.role = role;
     }
 
-    public int getGroup_num() {
-        return group_num;
+    public int getGroup_id() {
+        return group_id;
     }
 
-    public void setGroup_num(int group_num) {
-        this.group_num = group_num;
+    public void setGroup_id(int group_id) {
+        this.group_id = group_id;
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-    
 }

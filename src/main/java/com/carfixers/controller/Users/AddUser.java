@@ -40,10 +40,9 @@ public class AddUser extends HttpServlet {
         String last_name = request.getParameter("last_name");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String department = request.getParameter("department");
         String role = request.getParameter("role");
-        int group_num = Integer.parseInt(request.getParameter("group_num"));
-        User user = new User(username, first_name, last_name, password, role, group_num, department);
+        int group_id = Integer.parseInt(request.getParameter("group_id"));
+        User user = new User(username, first_name, last_name, password, role, group_id);
         if (UserDAO.insertUser(user)) {
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {

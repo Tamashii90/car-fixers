@@ -72,9 +72,9 @@ public class ViewTask extends HttpServlet {
         }
         //---------- Security is OK, fetch comments then return the task  --------------//
         List<Comment> comments = CommentDAO.findTaskComments(task.getId());
-        if (role.equals("group_head") && task.getAssignee() == null) {
+        if (role.equals("group_head") && task.getStatus().equals("available")) {
             // Get list of users in a group for group_head to assign the task to
-            List<String> availableUsers = UserDAO.findAssignableUsers(task.getDepartment(), task.getGroup_num());
+            List<String> availableUsers = UserDAO.findAssignableUsers(task.getId());
             request.setAttribute("users", availableUsers);
         }
         request.setAttribute("task", task);

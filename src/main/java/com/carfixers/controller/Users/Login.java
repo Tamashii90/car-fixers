@@ -4,7 +4,6 @@ import com.carfixers.dao.UserDAO;
 import com.carfixers.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +16,14 @@ public class Login extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         HttpSession session = request.getSession();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User user;
         try {
-            user = UserDAO.findUser(username);
+            user = UserDAO.findEmpByNickname(username);
         } catch (Exception ex) {
             response.setStatus(500);
             response.sendRedirect(request.getContextPath() + "/?msg=" + ex.getMessage());
@@ -38,8 +37,7 @@ public class Login extends HttpServlet {
         if (match) {
             session.setAttribute("username", user.getUsername());
             session.setAttribute("role", user.getRole());
-            session.setAttribute("group_num", user.getGroup_num());
-            session.setAttribute("department", user.getDepartment());
+            session.setAttribute("group_id", user.getGroup_id());
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             response.sendRedirect(request.getContextPath() + "/?msg=Invalid Credentials");

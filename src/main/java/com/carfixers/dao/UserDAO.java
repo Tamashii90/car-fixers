@@ -1,6 +1,8 @@
 package com.carfixers.dao;
 
 import com.carfixers.model.User;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,9 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO {
 
@@ -18,21 +17,31 @@ public class UserDAO {
     private static final String DB_USER = System.getenv("WJD_DB_USERNAME");
     private static final String DB_PWD = System.getenv("WJD_DB_PASSWORD");
 
-    private static final String FIND_GROUP_NUMS_STMT = "SELECT DISTINCT group_num from groups WHERE department = ?;";
-    private static final String FIND_ASSIGNABLE_USERS_STMT = "SELECT username FROM users WHERE department =? AND group_num = ? AND role = 'group_member';";
-    private static final String FIND_USER_STMT = "SELECT * FROM users WHERE username = ?;";
+//    private static final String FIND_DEP_GROUPS =
+//            "SELECT GROUP_NAME " +
+//            "FROM groups JOIN departments USING (DEP_ID) " +
+//            "WHERE DEP_NAME = ?;";
+    private static final String FIND_ASSIGNABLE_USERS_BY_TASK =
+            "SELECT EMP_NNAME " +
+            "FROM employees WHERE EMP_ROLE = 'group_member' AND GROUP_ID = (SELECT GROUP_ID " +
+            "FROM tasks JOIN employees USING (EMP_ID) " +
+            "WHERE TASK_ID = ?);";
+    private static final String FIND_EMP_BY_NICKNAME = "SELECT * FROM employees WHERE EMP_NNAME = ?;";
     private static final String FIND_ALL_STMT = "SELECT * FROM users;";
 
-    private static final String INSERT_USER_STMT = "INSERT INTO users (first_name, last_name, username, password, department, group_num, role) VALUES (?,?,?,?,?,?,?) ";
+    private static final String INSERT_USER_STMT =
+            "INSERT INTO employees (`EMP_ID`, `EMP_NNAME`, `EMP_PWD`, `EMP_FNAME`, `EMP_LNAME`, `GROUP_ID`, `EMP_ROLE`) " +
+            "VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+
 
     protected static Connection getConnection() throws ClassNotFoundException, SQLException {
-        Connection connection = null;
+        Connection connection;
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(DB_URI, DB_USER, DB_PWD);
         return connection;
     }
 
-//    public static List<User> findAllUsers() {
+    //    public static List<User> findAllUsers() {
 //
 //        ArrayList<User> users = new ArrayList<>();
 //        // this is called try-with-resource, it will auto-close the connection.
@@ -52,14 +61,13 @@ public class UserDAO {
 //
 //        return users;
 //    }
-    public static List<String> findAssignableUsers(String department, int group_num) {
+    public static List<String> findAssignableUsers(int taskId) {
 
         List<String> usernames = new ArrayList<>();
         // this is called try-with-resource, it will auto-close the connection.
         try (Connection connection = getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(FIND_ASSIGNABLE_USERS_STMT);) {
-            preparedStatement.setString(1, department);
-            preparedStatement.setInt(2, group_num);
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ASSIGNABLE_USERS_BY_TASK);) {
+            preparedStatement.setInt(1, taskId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String username = rs.getString("username");
@@ -72,20 +80,19 @@ public class UserDAO {
         return usernames;
     }
 
-    public static User findUser(String username) throws Exception {
+    public static User findEmpByNickname(String nickname) throws Exception {
         User user = null;
         try (Connection connection = getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_STMT);) {
-            preparedStatement.setString(1, username);
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_EMP_BY_NICKNAME);) {
+            preparedStatement.setString(1, nickname);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int group_num = rs.getInt("group_num");
+                int group_num = rs.getInt("GROUP_ID");
                 // use database username to avoid case-sensitivity errors
-                String dbUsername = rs.getString("username");
-                String password = rs.getString("password");
-                String role = rs.getString("role");
-                String department = rs.getString("department");
-                user = new User(dbUsername, password, role, group_num, department);
+                String username = rs.getString("EMP_NNAME");
+                String password = rs.getString("EMP_PWD");
+                String role = rs.getString("EMP_ROLE");
+                user = new User(username, password, role, group_num);
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -93,36 +100,34 @@ public class UserDAO {
         return user;
     }
 
-    public static List<Integer> findDepGroups(String department) {
-
-        List<Integer> group_nums = new ArrayList<>();
-        // this is called try-with-resource, it will auto-close the connection.
-        try (Connection connection = getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(FIND_GROUP_NUMS_STMT);) {
-            preparedStatement.setString(1, department);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                int group_num = rs.getInt("group_num");
-                group_nums.add(group_num);
-            }
-
-        } catch (Exception e) {
-        }
-        return group_nums;
-    }
+//    public static List<String> findDepGroups(String department) {
+//
+//        List<String> groupNames = new ArrayList<>();
+//        // this is called try-with-resource, it will auto-close the connection.
+//        try (Connection connection = getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(FIND_DEP_GROUPS);) {
+//            preparedStatement.setString(1, department);
+//            ResultSet rs = preparedStatement.executeQuery();
+//            while (rs.next()) {
+//                String groupName = rs.getString("GROUP_NAME");
+//                groupNames.add(groupName);
+//            }
+//        } catch (Exception e) {
+//        }
+//        return groupNames;
+//    }
 
     public static boolean insertUser(User user) {
         boolean rowInserted = false;
         try (Connection connection = getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_STMT);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_STMT);) {
             String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
             preparedStatement.setString(1, user.getFirst_name());
             preparedStatement.setString(2, user.getLast_name());
             preparedStatement.setString(3, user.getUsername());
             preparedStatement.setString(4, hashed);
-            preparedStatement.setString(5, user.getDepartment());
-            preparedStatement.setInt(6, user.getGroup_num());
-            preparedStatement.setString(7, user.getRole());
+            preparedStatement.setInt(5, user.getGroup_id());
+            preparedStatement.setString(6, user.getRole());
             rowInserted = preparedStatement.executeUpdate() > 0;
         } catch (Exception e) {
         }
