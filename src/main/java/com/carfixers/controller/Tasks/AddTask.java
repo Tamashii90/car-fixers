@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.carfixers.controller.Tasks;
 
 import com.carfixers.dao.TaskDAO;
-import com.carfixers.dao.UserDAO;
 import com.carfixers.model.Task;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,13 +33,11 @@ public class AddTask extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String department = request.getSession().getAttribute("department").toString();
-        int group_num = Integer.parseInt(request.getParameter("group_num"));
         String task_desc = request.getParameter("task_desc");
         String request_due_date = request.getParameter("due_date");
         String status = "available";
-        String assignee = null;
-        LocalDate due_date = null;
+        int emp_id = (int) request.getSession().getAttribute("emp_id");
+        LocalDate due_date;
 
         if (request_due_date.isEmpty()) {
             response.setStatus(400);
@@ -56,7 +47,7 @@ public class AddTask extends HttpServlet {
         }
 
         due_date = LocalDate.parse(request_due_date);
-        Task task = new Task(assignee, task_desc, status, due_date, department, group_num);
+        Task task = new Task(emp_id, task_desc, status, due_date);
         if (TaskDAO.insertTask(task)) {
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {

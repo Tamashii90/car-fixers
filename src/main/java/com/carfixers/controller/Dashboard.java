@@ -22,21 +22,21 @@ public class Dashboard extends HttpServlet {
         String username = session.getAttribute("username").toString();
         String role = session.getAttribute("role").toString();
         String department = "";
-        int group_num = 0;
+        int group_id = 0;
         // CEO has null values for these
         try {
             department = session.getAttribute("department").toString();
-            group_num = (int) session.getAttribute("group_num");
+            group_id = (int) session.getAttribute("group_id");
         } catch (NullPointerException e) {
         }
         List<Task> tasks = null;
 
         switch (role) {
             case "group_member":
-                tasks = TaskDAO.findAllowedTasks(department, group_num, username);
+                tasks = TaskDAO.findAllowedTasks(username, group_id);
                 break;
             case "group_head":
-                tasks = TaskDAO.findGroupTasks(department, group_num);
+                tasks = TaskDAO.findGroupTasks(group_id);
                 break;
             case "dep_head":
                 tasks = TaskDAO.findDepartTasks(department);

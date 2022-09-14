@@ -36,6 +36,7 @@ public class Login extends HttpServlet {
         boolean match = BCrypt.checkpw(password, user.getPassword());
         if (match) {
             session.setAttribute("username", user.getUsername());
+            session.setAttribute("emp_id", user.getEmp_id());
             session.setAttribute("role", user.getRole());
             session.setAttribute("group_id", user.getGroup_id());
             response.sendRedirect(request.getContextPath() + "/dashboard");

@@ -1,42 +1,35 @@
 package com.carfixers.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Task {
 
     private int id;
+    private int emp_id;
     private String assignee;
     private String task_desc;
     private String status;
     private LocalDate date_added_on;
     private LocalDate due_date;
-    private int group_num;
-    private String department;
 
-    public Task(String assignee, String task_desc, String status, LocalDate due_date, String department, int group_num) {
-        this.assignee = assignee;
+    public Task(int emp_id, String task_desc, String status, LocalDate due_date) {
+        this.emp_id = emp_id;
         this.task_desc = task_desc;
         this.status = status;
         this.due_date = due_date;
-        this.department = department;
-        this.group_num = group_num;
         this.date_added_on = LocalDate.now();
     }
 
-    public Task(int id, String assignee, String task_desc, String status, LocalDate date_added_on, LocalDate due_date, int group_num, String department) {
+    public Task(int id, String assignee, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
         this.id = id;
         this.assignee = assignee;
         this.task_desc = task_desc;
         this.status = status;
         this.date_added_on = date_added_on;
         this.due_date = due_date;
-        this.group_num = group_num;
-        this.department = department;
     }
 
-    public Task(int id, String assignee, String task_desc, String duration, String status, LocalDate date_added_on, LocalDate due_date) {
-        this.id = id;
+    public Task(String assignee, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
         this.assignee = assignee;
         this.task_desc = task_desc;
         this.status = status;
@@ -92,26 +85,16 @@ public class Task {
         this.assignee = assignee;
     }
 
-    public int getGroup_num() {
-        return group_num;
+    public int getEmp_id() {
+        return emp_id;
     }
 
-    public void setGroup_num(int group_num) {
-        this.group_num = group_num;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setEmp_id(int emp_id) {
+        this.emp_id = emp_id;
     }
 
     @Override
     public String toString() {
-        return "Task{" + "id=" + id + ", assignee=" + assignee + ", task_desc=" + task_desc + ", status=" + status + ", date_added_on=" + date_added_on + ", due_date=" + due_date + ", group_num=" + group_num + ", department=" + department + '}';
+        return "Task{" + "id=" + id + ", assignee=" + assignee + ", task_desc=" + task_desc + ", status=" + status + ", date_added_on=" + date_added_on + ", due_date=" + due_date+" }";
     }
-
-    
 }

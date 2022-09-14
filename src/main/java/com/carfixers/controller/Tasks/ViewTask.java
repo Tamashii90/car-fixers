@@ -55,7 +55,7 @@ public class ViewTask extends HttpServlet {
                     }
                     break;
                 case "group_head":
-                    if (task.getGroup_num() != group_num) {
+                    if (task.get() != group_num) {
                         response.setStatus(403);
                         request.setAttribute("msg", "Unauthorized");
                         request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);

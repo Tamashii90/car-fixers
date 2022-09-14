@@ -2,6 +2,7 @@ package com.carfixers.model;
 
 public class User {
 
+    private int emp_id;
     private String username;
     private String first_name;
     private String last_name;
@@ -71,6 +72,14 @@ public class User {
 
     public void setGroup_id(int group_id) {
         this.group_id = group_id;
+    }
+
+    public int getEmp_id() {
+        return emp_id;
+    }
+
+    public void setEmp_id(int emp_id) {
+        this.emp_id = emp_id;
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package com.carfixers.controller.Tasks;
 
+import com.carfixers.dao.GroupDAO;
 import com.carfixers.dao.TaskDAO;
 import com.carfixers.model.Task;
 import java.io.IOException;
@@ -22,20 +23,22 @@ public class AssignTask extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int id = Integer.parseInt(request.getPathInfo().split("/")[1]);
-        Task task = TaskDAO.findById(id);
+        int task_id = Integer.parseInt(request.getPathInfo().split("/")[1]);
+        Task task = TaskDAO.findById(task_id);
         HttpSession session = request.getSession();
         String role = session.getAttribute("role").toString();
-        String department = session.getAttribute("department").toString();
-        int group_num = Integer.parseInt(session.getAttribute("group_num").toString());
+        int group_id = Integer.parseInt(session.getAttribute("group_id").toString());
         //----------------------- Security Check ----------------------//
-        if (!role.equals("group_head") || !department.equals(task.getDepartment()) || group_num != task.getGroup_num()) {
+
+        // Only group HEAD from the SAME group can assign tasks
+        if (!role.equals("group_head") || group_id != GroupDAO.findGroupIdByTaskId(task_id)) {
             response.setStatus(403);
             request.setAttribute("msg", "Unauthorized");
             request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
         }
-        //----------------------- Security is OK, update task ---------------//
-        if (TaskDAO.assignTask(task.getId(), request.getParameter("assignee"))) {
+
+        //----------------------- Security is OK, assign task ---------------//
+        if (TaskDAO.assignTask(task.getId(), (int) session.getAttribute("emp_id"))) {
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             response.setStatus(500);
