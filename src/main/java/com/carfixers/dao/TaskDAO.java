@@ -163,8 +163,8 @@ public class TaskDAO {
                 String status = rs.getString("TASK_STATUS");
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 LocalDate due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
-                String assignee = rs.getString("EMP_NNAME");
-                task = new Task(id, assignee, task_desc, status, date_added_on, due_date);
+                int emp_id = rs.getInt("EMP_ID");
+                task = new Task(id, emp_id, task_desc, status, date_added_on, due_date);
             }
         } catch (SQLException e) {
         }

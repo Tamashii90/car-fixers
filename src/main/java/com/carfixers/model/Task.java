@@ -20,6 +20,15 @@ public class Task {
         this.date_added_on = LocalDate.now();
     }
 
+    public Task(int id, int emp_id, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
+        this.id = id;
+        this.emp_id = emp_id;
+        this.task_desc = task_desc;
+        this.status = status;
+        this.date_added_on = date_added_on;
+        this.due_date = due_date;
+    }
+
     public Task(int id, String assignee, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
         this.id = id;
         this.assignee = assignee;

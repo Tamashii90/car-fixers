@@ -5,11 +5,10 @@
  */
 package com.carfixers.controller.Tasks;
 
+import com.carfixers.dao.*;
 import com.carfixers.model.Comment;
-import com.carfixers.dao.TaskDAO;
-import com.carfixers.dao.CommentDAO;
-import com.carfixers.dao.UserDAO;
 import com.carfixers.model.Task;
+
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -29,10 +28,14 @@ public class ViewTask extends HttpServlet {
         Task task = null;
         HttpSession session = request.getSession();
         String role = session.getAttribute("role").toString();
+        int emp_id = (int) session.getAttribute("emp_id");
+        int group_id = (int) session.getAttribute("group_id");
+        int dep_id = (int) session.getAttribute("dep_id");
+        int task_id = -123;
         try {
             // check if task exists (maybe user manually entered a url)
-            int id = Integer.parseInt(request.getPathInfo().split("/")[1]);
-            task = TaskDAO.findById(id);
+            task_id = Integer.parseInt(request.getPathInfo().split("/")[1]);
+            task = TaskDAO.findById(task_id);
         } catch (Exception e) {
             response.setStatus(404);
             request.setAttribute("msg", "Not Found");
@@ -41,33 +44,28 @@ public class ViewTask extends HttpServlet {
 
         // If not the ceo, then check if user is allowed to view the task
         if (!role.equals("ceo")) {
-            String username = session.getAttribute("username").toString();
-            int group_num = (int) session.getAttribute("group_num");
-            String department = session.getAttribute("department").toString();
-            
-            //---------- Security Check --------------//
+
+            boolean isSecured = true;
             switch (role) {
                 case "group_member":
-                    if (task.getAssignee() != null && !task.getAssignee().equals(username)) {
-                        response.setStatus(403);
-                        request.setAttribute("msg", "Unauthorized");
-                        request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
+                    if (task.getEmp_id() != emp_id) {
+                        isSecured = false;
                     }
                     break;
                 case "group_head":
-                    if (task.get() != group_num) {
-                        response.setStatus(403);
-                        request.setAttribute("msg", "Unauthorized");
-                        request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
+                    if (GroupDAO.findGroupIdByTaskId(task_id) != group_id) {
+                        isSecured = false;
                     }
                     break;
                 case "dep_head":
-                    if (!task.getDepartment().equals(department)) {
-                        response.setStatus(403);
-                        request.setAttribute("msg", "Unauthorized");
-                        request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
+                    if (DepartmentDAO.findDepIdByGroupId(group_id) != dep_id) {
+                        isSecured = false;
                     }
-                    break;
+            }
+            if (!isSecured) {
+                response.setStatus(403);
+                request.setAttribute("msg", "Unauthorized");
+                request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
             }
         }
         //---------- Security is OK, fetch comments then return the task  --------------//

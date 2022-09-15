@@ -6,21 +6,21 @@ public class Comment {
 
     private int id;
     private int task_id;
-    private String author;
+    private int authorId;
     private String comment_desc;
     private LocalDate date_added_on;
 
-    public Comment(int task_id, String author, String comment_desc) {
+    public Comment(int task_id, int authorId, String comment_desc) {
         this.task_id = task_id;
-        this.author = author;
+        this.authorId = authorId;
         this.comment_desc = comment_desc;
         this.date_added_on = LocalDate.now();
     }
     
-    public Comment(int id, int task_id, String author, String comment_desc, LocalDate date_added_on) {
+    public Comment(int id, int task_id, int authorId, String comment_desc, LocalDate date_added_on) {
         this.id = id;
         this.task_id = task_id;
-        this.author = author;
+        this.authorId = authorId;
         this.comment_desc = comment_desc;
         this.date_added_on = date_added_on;
     }
@@ -41,12 +41,12 @@ public class Comment {
         this.task_id = task_id;
     }
 
-    public String getAuthor() {
-        return author;
+    public int getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
     }
 
     public String getComment_desc() {

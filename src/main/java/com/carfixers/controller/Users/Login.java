@@ -39,6 +39,7 @@ public class Login extends HttpServlet {
             session.setAttribute("emp_id", user.getEmp_id());
             session.setAttribute("role", user.getRole());
             session.setAttribute("group_id", user.getGroup_id());
+            session.setAttribute("dep_id", user.getDep_id());
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             response.sendRedirect(request.getContextPath() + "/?msg=Invalid Credentials");

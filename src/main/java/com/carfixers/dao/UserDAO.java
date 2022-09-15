@@ -26,7 +26,10 @@ public class UserDAO {
             "FROM employees WHERE EMP_ROLE = 'group_member' AND GROUP_ID = (SELECT GROUP_ID " +
             "FROM tasks JOIN employees USING (EMP_ID) " +
             "WHERE TASK_ID = ?);";
-    private static final String FIND_EMP_BY_NICKNAME = "SELECT * FROM employees WHERE EMP_NNAME = ?;";
+    private static final String FIND_EMP_BY_NICKNAME =
+            "SELECT * " +
+            "FROM employees JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
+            "WHERE EMP_NNAME = ?;";
     private static final String FIND_ALL_STMT = "SELECT * FROM users;";
 
     private static final String INSERT_USER_STMT =
@@ -87,12 +90,13 @@ public class UserDAO {
             preparedStatement.setString(1, nickname);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int group_num = rs.getInt("GROUP_ID");
+                int group_id = rs.getInt("GROUP_ID");
                 // use database username to avoid case-sensitivity errors
                 String username = rs.getString("EMP_NNAME");
                 String password = rs.getString("EMP_PWD");
                 String role = rs.getString("EMP_ROLE");
-                user = new User(username, password, role, group_num);
+                int dep_id = rs.getInt("DEP_ID");
+                user = new User(username, password, role, group_id, dep_id);
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());

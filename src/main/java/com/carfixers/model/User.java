@@ -9,12 +9,14 @@ public class User {
     private String password;
     private String role;
     private int group_id;
+    private int dep_id;
 
-    public User(String username, String password, String role, int group_id) {
+    public User(String username, String password, String role, int group_id, int dep_id) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.group_id = group_id;
+        this.dep_id = dep_id;
     }
 
     public User(String username, String first_name, String last_name, String password, String role, int group_id) {
@@ -82,4 +84,11 @@ public class User {
         this.emp_id = emp_id;
     }
 
+    public int getDep_id() {
+        return dep_id;
+    }
+
+    public void setDep_id(int dep_id) {
+        this.dep_id = dep_id;
+    }
 }
