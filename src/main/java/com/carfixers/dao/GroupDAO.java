@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GroupDAO {
     private static final String DB_URI = System.getenv("WJD_DB_URI");
@@ -16,6 +18,11 @@ public class GroupDAO {
             "SELECT GROUP_ID " +
             "FROM tasks JOIN employees USING (EMP_ID) " +
             "WHERE TASK_ID = ?;";
+
+    private static final String FIND_GROUPS_BY_DEP =
+            "SELECT GROUP_NAME " +
+            "FROM groups JOIN departments USING (DEP_ID) " +
+            "WHERE DEP_NAME = ? AND GROUP_NAME NOT LIKE '%head%';";
 
     protected static Connection getConnection() {
         Connection connection = null;
@@ -39,5 +46,21 @@ public class GroupDAO {
         } catch (SQLException e) {
         }
         return group_id;
+    }
+
+    public static List<String> findGroupsByDepartment(String department) {
+        List<String> groups = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_GROUPS_BY_DEP);) {
+            preparedStatement.setString(1, department);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                String group = rs.getString("GROUP_NAME");
+                groups.add(group);
+            }
+
+        } catch (SQLException e) {
+        }
+        return groups;
     }
 }

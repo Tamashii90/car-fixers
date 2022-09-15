@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="role" value="${sessionScope.role}" />
-<c:set var="group" value="${sessionScope.group_num}" />
-<c:set var="department" value="${sessionScope.department}" />
+<c:set var="group" value="${sessionScope.group_name}" />
+<c:set var="department" value="${sessionScope.dep_name}" />
 
 <div class="text-right my-4" style="color:black">
     <span style="color: black;background: #ffffff80;border-radius: 5px;padding: 5px;">

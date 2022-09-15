@@ -1,9 +1,12 @@
 package com.carfixers.controller.Tasks;
 
+import com.carfixers.dao.GroupDAO;
 import com.carfixers.dao.TaskDAO;
+import com.carfixers.dao.UserDAO;
 import com.carfixers.model.Task;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,12 +23,15 @@ public class AddTask extends HttpServlet {
 
         HttpSession session = request.getSession();
         String role = session.getAttribute("role").toString();
+        String department = session.getAttribute("dep_name").toString();
         if (!role.equals("dep_head")) {
             response.setStatus(403);
             request.setAttribute("msg", "Unauthorized");
             request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
             return;
         }
+        List<String> availableGroups = GroupDAO.findGroupsByDepartment(department);
+        request.setAttribute("groups", availableGroups);
         request.getRequestDispatcher("/WEB-INF/jsp/addTask.jsp").forward(request, response);
     }
 
@@ -34,9 +40,10 @@ public class AddTask extends HttpServlet {
             throws ServletException, IOException {
 
         String task_desc = request.getParameter("task_desc");
+        String group_name = request.getParameter("group_name");
         String request_due_date = request.getParameter("due_date");
         String status = "available";
-        int emp_id = (int) request.getSession().getAttribute("emp_id");
+        int emp_id = UserDAO.findHeadOfGroup(group_name);
         LocalDate due_date;
 
         if (request_due_date.isEmpty()) {

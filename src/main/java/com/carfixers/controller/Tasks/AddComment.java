@@ -8,7 +8,6 @@ package com.carfixers.controller.Tasks;
 import com.carfixers.dao.CommentDAO;
 import com.carfixers.model.Comment;
 import java.io.IOException;
-import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,9 +21,9 @@ public class AddComment extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String comment_desc = request.getParameter("comment_desc");
-        String author = request.getSession().getAttribute("username").toString();
+        int authorId = (int) request.getSession().getAttribute("emp_id");
         int task_id = Integer.parseInt(request.getParameter("task_id"));
-        Comment comment = new Comment(task_id, author, comment_desc);
+        Comment comment = new Comment(task_id, authorId, comment_desc);
         if (CommentDAO.insertComment(comment)) {
             response.sendRedirect(request.getContextPath() + "/tasks/" + task_id);
         } else {

@@ -11,6 +11,9 @@ public class Task {
     private String status;
     private LocalDate date_added_on;
     private LocalDate due_date;
+    private String dep_name;
+    private String group_name;
+
 
     public Task(int emp_id, String task_desc, String status, LocalDate due_date) {
         this.emp_id = emp_id;
@@ -20,20 +23,24 @@ public class Task {
         this.date_added_on = LocalDate.now();
     }
 
-    public Task(int id, int emp_id, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
+    public Task(int id, int emp_id, String dep_name, String group_name, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
         this.id = id;
         this.emp_id = emp_id;
+        this.dep_name = dep_name;
+        this.group_name = group_name;
         this.task_desc = task_desc;
         this.status = status;
         this.date_added_on = date_added_on;
         this.due_date = due_date;
     }
 
-    public Task(int id, String assignee, String task_desc, String status, LocalDate date_added_on, LocalDate due_date) {
+    public Task(int id, String assignee, String task_desc, String status, String group_name, String dep_name, LocalDate date_added_on, LocalDate due_date) {
         this.id = id;
         this.assignee = assignee;
         this.task_desc = task_desc;
         this.status = status;
+        this.dep_name = dep_name;
+        this.group_name = group_name;
         this.date_added_on = date_added_on;
         this.due_date = due_date;
     }
@@ -100,6 +107,22 @@ public class Task {
 
     public void setEmp_id(int emp_id) {
         this.emp_id = emp_id;
+    }
+
+    public String getDep_name() {
+        return dep_name;
+    }
+
+    public void setDep_name(String dep_name) {
+        this.dep_name = dep_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
     }
 
     @Override

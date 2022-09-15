@@ -30,7 +30,10 @@ public class UserDAO {
             "SELECT * " +
             "FROM employees JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
             "WHERE EMP_NNAME = ?;";
-    private static final String FIND_ALL_STMT = "SELECT * FROM users;";
+    private static final String FIND_HEAD_OF_GROUP =
+            "SELECT EMP_ID " +
+            "FROM departments JOIN groups USING (DEP_ID) JOIN employees USING (GROUP_ID) " +
+            "WHERE EMP_ROLE = 'group_head' AND GROUP_NAME = ?;";
 
     private static final String INSERT_USER_STMT =
             "INSERT INTO employees (`EMP_ID`, `EMP_NNAME`, `EMP_PWD`, `EMP_FNAME`, `EMP_LNAME`, `GROUP_ID`, `EMP_ROLE`) " +
@@ -73,7 +76,7 @@ public class UserDAO {
             preparedStatement.setInt(1, taskId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                String username = rs.getString("username");
+                String username = rs.getString("EMP_NNAME");
                 usernames.add(username);
             }
 
@@ -90,18 +93,36 @@ public class UserDAO {
             preparedStatement.setString(1, nickname);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int group_id = rs.getInt("GROUP_ID");
                 // use database username to avoid case-sensitivity errors
                 String username = rs.getString("EMP_NNAME");
                 String password = rs.getString("EMP_PWD");
                 String role = rs.getString("EMP_ROLE");
+                int emp_id = rs.getInt("EMP_ID");
                 int dep_id = rs.getInt("DEP_ID");
-                user = new User(username, password, role, group_id, dep_id);
+                int group_id = rs.getInt("GROUP_ID");
+                String dep_name = rs.getString("DEP_NAME");
+                String group_name = rs.getString("GROUP_NAME");
+                user = new User(emp_id, username, password, role, group_id, group_name, dep_id, dep_name);
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
         return user;
+    }
+
+    public static int findHeadOfGroup(String group_name) {
+        int emp_id = -123;
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_HEAD_OF_GROUP);) {
+            preparedStatement.setString(1, group_name);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                emp_id = rs.getInt("EMP_ID");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return emp_id;
     }
 
 //    public static List<String> findDepGroups(String department) {

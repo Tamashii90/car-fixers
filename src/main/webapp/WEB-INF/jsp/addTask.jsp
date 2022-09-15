@@ -12,7 +12,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Department</label>
                 <div class="col-7">
-                    <input class="form-control" name="department" type="text" disabled value="${sessionScope.department}">
+                    <input class="form-control" name="department" type="text" disabled value="${sessionScope.dep_name}">
                 </div>
             </div>
             <div class="form-group row">
@@ -32,9 +32,10 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Group</label>
                 <div class="col-7">
-                    <select class="custom-select" name="group_num">
-                            <option>1</option>
-                            <option>2</option>
+                    <select class="custom-select" name="group_name">
+                        <c:forEach items="${requestScope.groups}" var="group">
+                            <option value="${group}">${group}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>

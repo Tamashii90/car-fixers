@@ -10,13 +10,18 @@ public class User {
     private String role;
     private int group_id;
     private int dep_id;
+    String group_name;
+    String dep_name;
 
-    public User(String username, String password, String role, int group_id, int dep_id) {
+    public User(int emp_id, String username, String password, String role, int group_id, String group_name, int dep_id, String dep_name) {
+        this.emp_id = emp_id;
         this.username = username;
         this.password = password;
         this.role = role;
         this.group_id = group_id;
         this.dep_id = dep_id;
+        this.group_name = group_name;
+        this.dep_name = dep_name;
     }
 
     public User(String username, String first_name, String last_name, String password, String role, int group_id) {
@@ -90,5 +95,21 @@ public class User {
 
     public void setDep_id(int dep_id) {
         this.dep_id = dep_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getDep_name() {
+        return dep_name;
+    }
+
+    public void setDep_name(String dep_name) {
+        this.dep_name = dep_name;
     }
 }

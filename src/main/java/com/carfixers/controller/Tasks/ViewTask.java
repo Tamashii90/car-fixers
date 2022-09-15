@@ -25,18 +25,15 @@ public class ViewTask extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Task task = null;
         HttpSession session = request.getSession();
         String role = session.getAttribute("role").toString();
-        int emp_id = (int) session.getAttribute("emp_id");
-        int group_id = (int) session.getAttribute("group_id");
-        int dep_id = (int) session.getAttribute("dep_id");
-        int task_id = -123;
-        try {
-            // check if task exists (maybe user manually entered a url)
-            task_id = Integer.parseInt(request.getPathInfo().split("/")[1]);
-            task = TaskDAO.findById(task_id);
-        } catch (Exception e) {
+        String username = session.getAttribute("username").toString();
+        String group_name = session.getAttribute("group_name").toString();
+        String dep_name = session.getAttribute("dep_name").toString();
+        int task_id = Integer.parseInt(request.getPathInfo().split("/")[1]);
+        Task task = TaskDAO.findById(task_id);
+        // check if task exists (maybe user manually entered a url)
+        if (task == null) {
             response.setStatus(404);
             request.setAttribute("msg", "Not Found");
             request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
@@ -44,21 +41,20 @@ public class ViewTask extends HttpServlet {
 
         // If not the ceo, then check if user is allowed to view the task
         if (!role.equals("ceo")) {
-
             boolean isSecured = true;
             switch (role) {
                 case "group_member":
-                    if (task.getEmp_id() != emp_id) {
+                    if (!task.getAssignee().equals(username)) {
                         isSecured = false;
                     }
                     break;
                 case "group_head":
-                    if (GroupDAO.findGroupIdByTaskId(task_id) != group_id) {
+                    if (!task.getGroup_name().equals(group_name)) {
                         isSecured = false;
                     }
                     break;
                 case "dep_head":
-                    if (DepartmentDAO.findDepIdByGroupId(group_id) != dep_id) {
+                    if (!task.getDep_name().equals(dep_name)) {
                         isSecured = false;
                     }
             }
@@ -66,6 +62,7 @@ public class ViewTask extends HttpServlet {
                 response.setStatus(403);
                 request.setAttribute("msg", "Unauthorized");
                 request.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(request, response);
+                return;
             }
         }
         //---------- Security is OK, fetch comments then return the task  --------------//

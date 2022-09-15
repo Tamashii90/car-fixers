@@ -6,21 +6,22 @@ public class Comment {
 
     private int id;
     private int task_id;
-    private int authorId;
+    private int emp_id;
+    private String author;
     private String comment_desc;
     private LocalDate date_added_on;
 
-    public Comment(int task_id, int authorId, String comment_desc) {
+    public Comment(int task_id, int emp_id, String comment_desc) {
         this.task_id = task_id;
-        this.authorId = authorId;
+        this.emp_id = emp_id;
         this.comment_desc = comment_desc;
         this.date_added_on = LocalDate.now();
     }
-    
-    public Comment(int id, int task_id, int authorId, String comment_desc, LocalDate date_added_on) {
+
+    public Comment(int id, int task_id, String author, String comment_desc, LocalDate date_added_on) {
         this.id = id;
         this.task_id = task_id;
-        this.authorId = authorId;
+        this.author = author;
         this.comment_desc = comment_desc;
         this.date_added_on = date_added_on;
     }
@@ -41,12 +42,12 @@ public class Comment {
         this.task_id = task_id;
     }
 
-    public int getAuthorId() {
-        return authorId;
+    public String getAuthorId() {
+        return author;
     }
 
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
+    public void setAuthorId(String author) {
+        this.author = author;
     }
 
     public String getComment_desc() {
@@ -65,4 +66,31 @@ public class Comment {
         this.date_added_on = date_added_on;
     }
 
+    public int getEmp_id() {
+        return emp_id;
+    }
+
+    public void setEmp_id(int emp_id) {
+        this.emp_id = emp_id;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", task_id=" + task_id +
+                ", emp_id=" + emp_id +
+                ", author='" + author + '\'' +
+                ", comment_desc='" + comment_desc + '\'' +
+                ", date_added_on=" + date_added_on +
+                '}';
+    }
 }

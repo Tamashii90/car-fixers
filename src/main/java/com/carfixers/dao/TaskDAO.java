@@ -1,6 +1,7 @@
 package com.carfixers.dao;
 
 import com.carfixers.model.Task;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,31 +17,34 @@ public class TaskDAO {
     private static final String DB_USER = System.getenv("WJD_DB_USERNAME");
     private static final String DB_PWD = System.getenv("WJD_DB_PASSWORD");
 
-    private static final String FIND_TASK_STMT = "SELECT * FROM tasks WHERE tasks.id = ?;";
+    private static final String FIND_TASK_STMT =
+            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, DEP_NAME, GROUP_NAME, TASK_CRTDATE, TASK_DUEDATE " +
+            "FROM tasks JOIN employees USING (EMP_ID) JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
+            "WHERE TASK_ID = ?";
     private static final String FIND_ALLOWED_TASKS_STMT =
-            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, TASK_CRTDATE, TASK_DUEDATE " +
-            "FROM tasks JOIN employees USING (EMP_ID) " +
+            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, DEP_NAME, GROUP_NAME, TASK_CRTDATE, TASK_DUEDATE " +
+            "FROM tasks JOIN employees USING (EMP_ID) JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
             "WHERE EMP_NNAME = ? OR (TASK_STATUS = 'available' AND GROUP_ID = ?);";
     private static final String FIND_GROUP_TASKS_STMT =
-            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, TASK_CRTDATE, TASK_DUEDATE " +
-            "FROM tasks JOIN employees USING (EMP_ID) " +
+            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, DEP_NAME, GROUP_NAME, TASK_CRTDATE, TASK_DUEDATE " +
+            "FROM tasks JOIN employees USING (EMP_ID) JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
             "WHERE GROUP_ID = ?;";
     private static final String FIND_DEPART_TASKS_STMT =
-            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, TASK_CRTDATE, TASK_DUEDATE " +
+            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, DEP_NAME, GROUP_NAME, TASK_CRTDATE, TASK_DUEDATE " +
             "FROM tasks JOIN employees USING (EMP_ID) JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID) " +
-            "WHERE DEP_ID = ?;";
+            "WHERE DEP_NAME = ?;";
     private static final String FIND_ALL_TASKS_STMT =
-            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, TASK_CRTDATE, TASK_DUEDATE " +
-            "FROM tasks JOIN employees USING(EMP_ID);";
+            "SELECT TASK_ID, EMP_NNAME, TASK_DESC, TASK_STATUS, DEP_NAME, GROUP_NAME, TASK_CRTDATE, TASK_DUEDATE " +
+            "FROM tasks JOIN employees USING (EMP_ID) JOIN groups USING (GROUP_ID) JOIN departments USING (DEP_ID);";
     private static final String INSERT_TASK_STMT =
-            "INSERT INTO `tasks` (`TASK_ID`, `EMP_ID`, `TASK_DESC`, `TASK_STATUS`, `TASK_DUEDATE`, `TASK_CRTDATE`) " +
-            "VALUES (NULL, ?, ?, ?, ?, ?) ";
+            "INSERT INTO `tasks` (`EMP_ID`, `TASK_DESC`, `TASK_STATUS`, `TASK_DUEDATE`, `TASK_CRTDATE`) " +
+            "VALUES (?, ?, ?, ?, ?);";
     private static final String ASSIGN_TASK_STMT =
-            "UPDATE tasks SET EMP_ID = ?, TASK_STATUS = 'assigned' " +
-            "WHERE tasks.id = ?;";
+            "UPDATE tasks SET EMP_ID = (SELECT EMP_ID FROM employees WHERE EMP_NNAME = ?), TASK_STATUS = 'assigned' " +
+            "WHERE TASK_ID = ?;";
     private static final String MARK_TASK_STMT =
-            "UPDATE tasks SET status = ? " +
-            "WHERE tasks.id = ?;";
+            "UPDATE tasks SET TASK_STATUS = ? " +
+            "WHERE TASK_ID = ?;";
 
     protected static Connection getConnection() {
         Connection connection = null;
@@ -67,9 +71,11 @@ public class TaskDAO {
                 String realAssignee = rs.getString("EMP_NNAME");
                 String task_desc = rs.getString("TASK_DESC");
                 String status = rs.getString("TASK_STATUS");
+                String group_name = rs.getString("GROUP_NAME");
+                String dep_name = rs.getString("DEP_NAME");
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 LocalDate due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
-                Task task = new Task(id, realAssignee, task_desc, status, date_added_on, due_date);
+                Task task = new Task(id, realAssignee, task_desc, status, group_name, dep_name, date_added_on, due_date);
                 tasks.add(task);
             }
 
@@ -93,7 +99,9 @@ public class TaskDAO {
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 LocalDate due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
                 String assignee = rs.getString("EMP_NNAME");
-                Task task = new Task(id, assignee, task_desc, status, date_added_on, due_date);
+                String group_name = rs.getString("GROUP_NAME");
+                String dep_name = rs.getString("DEP_NAME");
+                Task task = new Task(id, assignee, task_desc, status, group_name, dep_name, date_added_on, due_date);
                 tasks.add(task);
             }
 
@@ -117,14 +125,17 @@ public class TaskDAO {
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 String assignee = rs.getString("EMP_NNAME");
                 LocalDate due_date = null;
+                String group_name = rs.getString("GROUP_NAME");
+                String dep_name = rs.getString("DEP_NAME");
                 if (rs.getString("TASK_DUEDATE") != null) {
                     due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
                 }
-                Task task = new Task(id, assignee, task_desc, status, date_added_on, due_date);
+                Task task = new Task(id, assignee, task_desc, status, group_name, dep_name, date_added_on, due_date);
                 tasks.add(task);
             }
 
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return tasks;
     }
@@ -143,11 +154,13 @@ public class TaskDAO {
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 LocalDate due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
                 String assignee = rs.getString("EMP_NNAME");
-                Task task = new Task(id, assignee, task_desc, status, date_added_on, due_date);
+                String group_name = rs.getString("GROUP_NAME");
+                String dep_name = rs.getString("DEP_NAME");
+                Task task = new Task(id, assignee, task_desc, status, group_name, dep_name, date_added_on, due_date);
                 tasks.add(task);
             }
-
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return tasks;
     }
@@ -163,10 +176,13 @@ public class TaskDAO {
                 String status = rs.getString("TASK_STATUS");
                 LocalDate date_added_on = LocalDate.parse(rs.getString("TASK_CRTDATE"));
                 LocalDate due_date = LocalDate.parse(rs.getString("TASK_DUEDATE"));
-                int emp_id = rs.getInt("EMP_ID");
-                task = new Task(id, emp_id, task_desc, status, date_added_on, due_date);
+                String assignee = rs.getString("EMP_NNAME");
+                String dep_name = rs.getString("DEP_NAME");
+                String group_name = rs.getString("GROUP_NAME");
+                task = new Task(id, assignee, task_desc, status, group_name, dep_name, date_added_on, due_date);
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return task;
     }
@@ -188,14 +204,15 @@ public class TaskDAO {
         return rowInserted;
     }
 
-    public static boolean assignTask(int task_id, int emp_id) {
+    public static boolean assignTask(int task_id, String assignee) {
         boolean rowUpdated = false;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(ASSIGN_TASK_STMT);) {
-            preparedStatement.setInt(1, emp_id);
+            preparedStatement.setString(1, assignee);
             preparedStatement.setInt(2, task_id);
             rowUpdated = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return rowUpdated;
     }
@@ -208,6 +225,7 @@ public class TaskDAO {
             preparedStatement.setInt(2, task_id);
             rowUpdated = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return rowUpdated;
     }

@@ -3,6 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="task" value="${requestScope.task}"/>
+<c:set var="groups" value="${requestScope.groups}"/>
 
 <t:page>
     <jsp:attribute name="title">
@@ -14,7 +15,7 @@
             <div class="form-group row">
                 <label class="col-2 col-form-label">Assignee</label>
                 <div class="col-7">
-                    <input class="form-control-plaintext" type="text" readonly value="${task.assignee == null ? "-" : task.assignee}"/>
+                    <input class="form-control-plaintext" type="text" readonly value="${task.status == 'available' ? 'NONE' : task.assignee}"/>
                 </div>
             </div>
             <div class="form-group row">
@@ -32,13 +33,13 @@
             <div class="form-group row">
                 <label class="col-2 col-form-label">Department</label>
                 <div class="col-7">
-                    <input class="form-control-plaintext" type="text" readonly value="${task.department}"/>
+                    <input class="form-control-plaintext" type="text" readonly value="${task.dep_name}"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-2 col-form-label">Group</label>
                 <div class="col-7">
-                    <input class="form-control-plaintext" type="text" readonly value="${task.group_num}"/>
+                    <input class="form-control-plaintext" type="text" readonly value="${task.group_name}"/>
                 </div>
             </div>
             <div class="form-group row">
@@ -73,7 +74,7 @@
                 <button type="submit" class="btn btn-primary" style="position: relative;left: 20px;">Mark</button>
             </div>
         </form>
-        <c:if test="${sessionScope.role.equals('group_head') && task.assignee == null}">
+        <c:if test="${sessionScope.role.equals('group_head') && task.status == 'available'}">
             <h3 class="my-4">Assign task</h3>
             <form class="mb-4" method="POST" action="${pageContext.request.contextPath}/assign/${task.id}">
                 <div class="form-group row">

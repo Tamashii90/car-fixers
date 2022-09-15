@@ -38,7 +38,7 @@ public class AssignTask extends HttpServlet {
         }
 
         //----------------------- Security is OK, assign task ---------------//
-        if (TaskDAO.assignTask(task.getId(), (int) session.getAttribute("emp_id"))) {
+        if (TaskDAO.assignTask(task.getId(), request.getParameter("assignee"))) {
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             response.setStatus(500);

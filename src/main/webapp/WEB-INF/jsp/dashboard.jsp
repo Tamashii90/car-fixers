@@ -37,13 +37,13 @@
                         <tbody>
                             <c:forEach items="${requestScope.tasks}" var="task">
                                 <tr>
-                                    <td>${task.assignee == null ? "-" : task.assignee}</td>
+                                    <td>${task.status == "available" ? "NONE" : task.assignee}</td>
                                     <td>
                                         ${task.task_desc}
                                     </td>
                                     <td>${task.status}</td>
-                                    <td>${task.department}</td>
-                                    <td>${task.group_num}</td>
+                                    <td>${task.dep_name}</td>
+                                    <td>${task.group_name}</td>
                                     <td>${task.date_added_on}</td>
                                     <td>${task.due_date}</td>
                                     <td><a href="${pageContext.request.getContextPath()}/tasks/${task.id}">View</a></td>

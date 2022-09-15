@@ -17,11 +17,12 @@ public class CommentDAO {
     private static final String DB_PWD = System.getenv("WJD_DB_PASSWORD");
 
     private static final String FIND_TASK_COMMENTS_STMT =
-            "SELECT * FROM comments " +
-            "WHERE task_id = ?";
+            "SELECT * " +
+            "FROM comments JOIN employees USING (EMP_ID) " +
+            "WHERE task_id = ?;";
     private static final String INSERT_COMMENT_STMT =
-            "INSERT INTO comments (`CMNT_ID`, `EMP_ID`, `TASK_ID`, `CMNT_DESC`, `CMNT_DATE`) " +
-            "VALUES (NULL, ?, ?, ?, ?);";
+            "INSERT INTO comments (`EMP_ID`, `TASK_ID`, `CMNT_DESC`, `CMNT_DATE`) " +
+            "VALUES (?, ?, ?, ?);";
 
     protected static Connection getConnection() {
         Connection connection = null;
@@ -42,14 +43,14 @@ public class CommentDAO {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("CMNT_ID");
-                int authorId = rs.getInt("EMP_ID");
+                String author = rs.getString("EMP_NNAME");
                 String comment_desc = rs.getString("CMNT_DESC");
                 LocalDate date_added_on = LocalDate.parse(rs.getString("CMNT_DATE"));
-                Comment comment = new Comment(id, task_id, authorId, comment_desc, date_added_on);
+                Comment comment = new Comment(id, task_id, author, comment_desc, date_added_on);
                 comments.add(comment);
             }
-
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return comments;
     }
@@ -58,7 +59,7 @@ public class CommentDAO {
         boolean rowInserted = false;
         try (Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT_COMMENT_STMT);) {
-            preparedStatement.setInt(1, comment.getAuthorId());
+            preparedStatement.setInt(1, comment.getEmp_id());
             preparedStatement.setInt(2, comment.getTask_id());
             preparedStatement.setString(3, comment.getComment_desc());
             preparedStatement.setString(4, comment.getDate_added_on().toString());

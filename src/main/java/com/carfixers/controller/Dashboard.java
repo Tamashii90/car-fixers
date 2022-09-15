@@ -21,14 +21,8 @@ public class Dashboard extends HttpServlet {
         HttpSession session = request.getSession();
         String username = session.getAttribute("username").toString();
         String role = session.getAttribute("role").toString();
-        String department = "";
-        int group_id = 0;
-        // CEO has null values for these
-        try {
-            department = session.getAttribute("department").toString();
-            group_id = (int) session.getAttribute("group_id");
-        } catch (NullPointerException e) {
-        }
+        String department = session.getAttribute("dep_name").toString();
+        int group_id = (int) session.getAttribute("group_id");
         List<Task> tasks = null;
 
         switch (role) {
