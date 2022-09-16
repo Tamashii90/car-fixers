@@ -1,12 +1,16 @@
 import { useState } from "react";
 
 export function Form() {
+  const fallBack = {
+    accounting: ["acc-1"],
+    repair: ["repair-1"],
+    customer_support: ["cs-1"],
+  };
   // This will be set on the backend, on the JSP page
-  const { departments } = window;
+  // The fallback is used during development only
+  const departments = window.departments || fallBack;
   const [dep, setDep] = useState(Object.keys(departments)[0]);
-  const [role, setRole] = useState("group_member");
   const [group, setGroup] = useState(departments[dep][0]);
-  const currDep = departments[dep];
   const capitalize = str => {
     const spacedStr = str.replace("_", " ");
     const words = spacedStr.split(" ").map(word => word[0].toUpperCase() + word.slice(1));
@@ -57,27 +61,16 @@ export function Form() {
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-sm-2 col-form-label">Role</label>
-        <div className="col-7">
-          <select className="custom-select" name="role" required value={role} onChange={e => setRole(e.target.value)}>
-            <option value="group_member">Group Member</option>
-            <option value="group_head">Group Head</option>
-            <option value="dep_head">Department Head</option>
-          </select>
-        </div>
-      </div>
-      <div className="form-group row">
         <label className="col-sm-2 col-form-label">Group</label>
         <div className="col-7">
           <select
             className="custom-select"
-            name="group_num"
-            disabled={role === "dep_head"}
+            name="group_name"
             required
-            value={role === "dep_head" ? currDep[currDep.length - 1] : group}
+            value={group}
             onChange={e => setGroup(e.target.value)}>
-            {currDep.map(group => (
-              <option value={group} key={group} hidden={group.includes("head")}>
+            {departments[dep].map(group => (
+              <option value={group} key={group}>
                 {group}
               </option>
             ))}

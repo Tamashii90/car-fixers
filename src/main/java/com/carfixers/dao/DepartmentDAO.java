@@ -6,6 +6,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DepartmentDAO {
     private static final String DB_URI = System.getenv("WJD_DB_URI");
@@ -16,6 +20,10 @@ public class DepartmentDAO {
             "SELECT DISTINCT DEP_ID " +
             "FROM departments JOIN groups USING (DEP_ID) " +
             "WHERE GROUP_ID = ?;";
+    public static final String FIND_DEPS_AND_GROUPS =
+            "SELECT DEP_NAME, GROUP_NAME " +
+            "FROM departments JOIN groups USING (DEP_ID) " +
+            "WHERE DEP_NAME != 'ceo' AND GROUP_NAME NOT LIKE '%head%';";
 
     protected static Connection getConnection() {
         Connection connection = null;
@@ -25,6 +33,23 @@ public class DepartmentDAO {
         } catch (ClassNotFoundException | SQLException ex) {
         }
         return connection;
+    }
+
+    public static Map<String, List<String>> findAllDepsAndGroups() {
+        Map<String, List<String>> map = new HashMap<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_DEPS_AND_GROUPS);) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                String depName = rs.getString("DEP_NAME");
+                String groupName = rs.getString("GROUP_NAME");
+                if (!map.containsKey(depName)) map.put(depName, new ArrayList<>());
+                map.get(depName).add(groupName);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return map;
     }
 
     public static int findDepIdByGroupId(int group_id) {

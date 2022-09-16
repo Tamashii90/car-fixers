@@ -36,8 +36,8 @@ public class UserDAO {
             "WHERE EMP_ROLE = 'group_head' AND GROUP_NAME = ?;";
 
     private static final String INSERT_USER_STMT =
-            "INSERT INTO employees (`EMP_ID`, `EMP_NNAME`, `EMP_PWD`, `EMP_FNAME`, `EMP_LNAME`, `GROUP_ID`, `EMP_ROLE`) " +
-            "VALUES (NULL, ?, ?, ?, ?, ?, ?);";
+            "INSERT INTO employees (`EMP_NNAME`, `EMP_PWD`, `EMP_FNAME`, `EMP_LNAME`, `GROUP_ID`, `EMP_ROLE`) " +
+            "VALUES (?, ?, ?, ?, (SELECT GROUP_ID FROM groups WHERE GROUP_NAME = ?), ?);";
 
 
     protected static Connection getConnection() throws ClassNotFoundException, SQLException {
@@ -147,14 +147,15 @@ public class UserDAO {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_STMT);) {
             String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            preparedStatement.setString(1, user.getFirst_name());
-            preparedStatement.setString(2, user.getLast_name());
-            preparedStatement.setString(3, user.getUsername());
-            preparedStatement.setString(4, hashed);
-            preparedStatement.setInt(5, user.getGroup_id());
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, hashed);
+            preparedStatement.setString(3, user.getFirst_name());
+            preparedStatement.setString(4, user.getLast_name());
+            preparedStatement.setString(5, user.getGroup_name());
             preparedStatement.setString(6, user.getRole());
             rowInserted = preparedStatement.executeUpdate() > 0;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return rowInserted;
     }

@@ -17,7 +17,6 @@ A framework-less Java web app that allows an auto-repair company to manage and t
 
 ## Database Design
 Following is the ERD of the database. Note that *EMP_ID* in the TASK table will initially hold a **group head**'s ID before a **group member** is assigned the task. This will be explained below.
-*This new ERD doesn't accurately reflect the database implementation yet (work in progress).*
 
 <div align="center">
     <img alt="DB_ERD" src="https://i.imgur.com/whgmsK3.png" />

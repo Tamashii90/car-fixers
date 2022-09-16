@@ -24,13 +24,13 @@ public class User {
         this.dep_name = dep_name;
     }
 
-    public User(String username, String first_name, String last_name, String password, String role, int group_id) {
+    public User(String username, String first_name, String last_name, String password, String role, String group_name) {
         this.username = username;
         this.first_name = first_name;
         this.last_name = last_name;
         this.password = password;
         this.role = role;
-        this.group_id = group_id;
+        this.group_name = group_name;
     }
 
     public String getFirst_name() {
@@ -111,5 +111,21 @@ public class User {
 
     public void setDep_name(String dep_name) {
         this.dep_name = dep_name;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "emp_id=" + emp_id +
+                ", username='" + username + '\'' +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", group_id=" + group_id +
+                ", dep_id=" + dep_id +
+                ", group_name='" + group_name + '\'' +
+                ", dep_name='" + dep_name + '\'' +
+                '}';
     }
 }
