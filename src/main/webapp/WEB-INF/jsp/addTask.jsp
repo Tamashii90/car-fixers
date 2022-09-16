@@ -46,7 +46,6 @@
                 </div>
             </div>
             <button class="btn btn-primary" type="submit">Add Task</button>
-
         </form>
     </jsp:body>
 </t:page>

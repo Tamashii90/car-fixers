@@ -50,6 +50,12 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -89,29 +95,51 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>Bundling React</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm</executable>
+                            <workingDirectory>src/main/webapp/js/src</workingDirectory>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
                     <path>/</path>
                 </configuration>
-		<executions>
-          <execution>
-            <id>tomcat-run</id>
-            <goals>
-              <goal>exec-war-only</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <path>/</path>
-              <!-- optional, needed only if you want to use a preconfigured server.xml file -->
-              <serverXml>src/main/tomcatconf/server.xml</serverXml>
-              <!-- optional values which can be configurable -->
-              <attachArtifactClassifier>exec-war</attachArtifactClassifier>
-              <attachArtifactClassifierType>jar</attachArtifactClassifierType>
-            </configuration>
-          </execution>
-        </executions>
+                <executions>
+                    <execution>
+                        <id>tomcat-run</id>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>/</path>
+                            <!-- optional, needed only if you want to use a preconfigured server.xml file -->
+                            <serverXml>src/main/tomcatconf/server.xml</serverXml>
+                            <!-- optional values which can be configurable -->
+                            <attachArtifactClassifier>exec-war</attachArtifactClassifier>
+                            <attachArtifactClassifierType>jar</attachArtifactClassifierType>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

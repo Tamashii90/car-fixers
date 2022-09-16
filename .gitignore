@@ -2,5 +2,9 @@
 !.gitignore
 !README.md
 !src/
+src/main/webapp/js/src/.parcel-cache
+src/main/webapp/js/src/dist
+src/main/webapp/js/index.js
+src/main/webapp/js/src/node_modules
 !pom.xml
 !Procfile

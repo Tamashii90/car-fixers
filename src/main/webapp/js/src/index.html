@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <header id="header" class="clear text-white pb-3">
+      <div>
+        <h1>
+          <a href="http://localhost:8080">Car Fixers</a>
+        </h1>
+        <p>Task Management System</p>
+        <nav>
+          <ul class="clear">
+            <li class="drop">Welcome, admin</li>
+            <li>
+              <form style="margin: 0 !important" action="/logout" method="POST">
+                <button class="text-secondary" type="submit" id="logout-btn" title="Log out">
+                  <i class="fas fa-sign-out-alt fa-2x"></i>
+                </button>
+              </form>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <div class="text-right my-4" style="color: black">
+        <span style="color: black; background: #ffffff80; border-radius: 5px; padding: 5px"> Role: CEO </span>
+      </div>
+      <div id="react"></div>
+      <script type="module" src="./index.js"></script>
+    </main>
+  </body>
+</html>
