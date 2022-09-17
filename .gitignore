@@ -3,6 +3,9 @@
 !README.md
 !src/
 src/main/webapp/js/src/.parcel-cache
+# created by frontend-maven-plugin
+src/main/webapp/js/src/node
+
 src/main/webapp/js/src/dist
 src/main/webapp/js/index.js
 src/main/webapp/js/src/node_modules
